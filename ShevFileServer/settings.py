@@ -25,7 +25,7 @@ SECRET_KEY = 'c6-0aij2i@1j4dg_engw(b@0=9hn!^3*zjtx%$3@=w+g^2j48$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -37,6 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+
+    'filemanage',
+    'common.AuthServerModel',
+    'common.ChatServerModel',
+    'common.FileServerModel',
 ]
 
 MIDDLEWARE = [
@@ -75,10 +81,21 @@ WSGI_APPLICATION = 'ShevFileServer.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'shevdb', # DB명
+        'USER' : 'yejin', # 데이터베이스 계정
+        'PASSWORD' : 'yejin', # 비밀번호
+        'HOST' : '192.168.0.24', # 데이터베이스 주소
+        'PORT' : '3306', # 포트번호
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
 
 
 # Password validation
@@ -105,7 +122,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 
@@ -118,3 +136,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# Media files (.jpeg, .png, .pdf etc)
+# MEDIA_ROOT = os.path.join(BASE_DIR, '..', 'uploaded_media')
+
+ENV_PATH = os.path.abspath(os.path.dirname(__file__))
+MEDIA_ROOT = os.path.join(ENV_PATH, 'media/')
+MEDIA_URL = '/media/'
