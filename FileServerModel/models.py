@@ -2,8 +2,11 @@ import os
 from django.db import models
 from django.utils.six import python_2_unicode_compatible
 
-from AuthServerModel.models import User
-from ChatServerModel.models import *
+# from ChatServerModel.models import *
+# from AuthServerModel.models import User
+
+from chat.models import TopicMessage, ChatRoomMember, ChatRoomMessage, ChatRoom, Topic, GroupMember, Group
+from AuthSer.models import User
 
 
 @python_2_unicode_compatible
