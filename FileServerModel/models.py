@@ -5,7 +5,7 @@ from django.utils.six import python_2_unicode_compatible
 # from ChatServerModel.models import *
 # from AuthServerModel.models import User
 
-from chat.models import TopicMessage, ChatRoomMember, ChatRoomMessage, ChatRoom, Topic, GroupMember, Group
+from chat.models import TopicMessage, ChatRoomMessage
 from AuthSer.models import User
 
 
