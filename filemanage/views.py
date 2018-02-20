@@ -1,3 +1,4 @@
+import requests
 from django.shortcuts import render
 from django.http import HttpResponse
 
@@ -11,7 +12,6 @@ from rest_framework.parsers import (
 )
 # from asgiref.sync import async_to_sync
 # from channels.layers import get_channel_layer
-import requests
 
 from ShevFileServer.settings import MEDIA_ROOT
 from chat.models import *
@@ -29,6 +29,8 @@ from .serializers import (
     ChatRoomFileUploadSerializer,
     ChatRoomFileDownloadSerializer,
 )
+
+from common.const import const_value, status_code
 
 
 class TopicFileUploadView(APIView):
@@ -78,8 +80,9 @@ class TopicFileUploadView(APIView):
             headers = {'Content-Type': 'application/json', 'Accept': 'application/json'}
 
             res = requests.post("http://192.168.0.33:9000/api/group/topicfile/", data=data_json, headers=headers)
-            print(res.json())  # TODO
-            # if res.json().get('result').get('code') == 1:  # 세션이 있는 경우
+            print(res.json())
+            if res.json().get('result') == 8400:  # ChatServer가 제대로 websocket을 보내지 않은 경우
+                return Response({'result': status_code['CHAT_MADE_FAIL']}, status=status.HTTP_200_OK)
 
             return Response(file_serializer.data, status=status.HTTP_201_CREATED)
         else:
