@@ -32,6 +32,12 @@ from .serializers import (
 
 from common.const import const_value, status_code
 
+CHAT_SERVER_IP = "192.168.0.33"
+CHAT_SERVER_POST = "9000"
+CHAT_SERVER = CHAT_SERVER_IP + ":" + CHAT_SERVER_POST + "/"
+CHAT_SERVER_ROOT_API = "api/group/"
+# EX. 192.168.0.33:9000/api/group/chatroomfile/"
+
 
 class TopicFileUploadView(APIView):
     queryset = TopicFile.objects.all()
@@ -79,7 +85,9 @@ class TopicFileUploadView(APIView):
 
             headers = {'Content-Type': 'application/json', 'Accept': 'application/json'}
 
-            res = requests.post("http://192.168.0.33:9000/api/group/topicfile/", data=data_json, headers=headers)
+            res = requests.post("http://" + CHAT_SERVER + CHAT_SERVER_ROOT_API + "topicfile/",
+                                data=data_json,
+                                headers=headers)
             print(res.json())
             if res.json().get('result') == 8400:  # ChatServer가 제대로 websocket을 보내지 않은 경우
                 return Response({'result': status_code['CHAT_MADE_FAIL']}, status=status.HTTP_200_OK)
@@ -154,10 +162,23 @@ class ChatRoomFileUploadView(APIView):
             file_serializer.save()
 
             # websocket으로 message send 하기 위해 필요한 정보를 ShevChatServer로 보낸다.
-            send_data = {'room_id': chatroom_id, 'username': user.user_name, 'message': messages_serializer.data}
-            res = requests.post("http://192.168.0.33:9000/api/group/chatroomfile/", data=send_data)
+            send_data = {
+                'room_id': chatroom_id,
+                'username': user.user_name,
+                'message': messages_serializer.data
+            }
+            data_json = json.dumps(send_data)
+            # payload = {'json_payload': data_json}
+            print(data_json)
+
+            headers = {'Content-Type': 'application/json', 'Accept': 'application/json'}
+
+            res = requests.post("http://" + CHAT_SERVER + CHAT_SERVER_ROOT_API + "chatroomfile/",
+                                data=data_json,
+                                headers=headers)
             print(res.json())
-            # if res.json().get('result').get('code') == 1:  # 세션이 있는 경우
+            if res.json().get('result') == 8400:  # ChatServer가 제대로 websocket을 보내지 않은 경우
+                return Response({'result': status_code['CHAT_MADE_FAIL']}, status=status.HTTP_200_OK)
 
             return Response(file_serializer.data, status=status.HTTP_201_CREATED)
         else:
